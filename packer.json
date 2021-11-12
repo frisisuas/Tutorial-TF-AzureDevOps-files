@@ -5,7 +5,7 @@
     "TenantId": "",
     "SubscriptionId": "",
 
-    "ImageDestRG": "",    
+    "ImageDestRG": "",
     "TempResourceGroup": "",
 
     "VirtualNetwork": "",
@@ -19,9 +19,9 @@
     "StorageAccountInstallersKey": "",
     "StorageAccountInstallersPath": "",
 
-    "ImagePublisher":"MicrosoftWindowsDesktop",
-    "ImageOffer":"office-365",
-    "ImageSku":"21h1-evd-o365pp",
+    "ImagePublisher":"MicrosoftWindowsServer",
+    "ImageOffer":"WindowsServer",
+    "ImageSku":"2022-Datacenter",
 
     "Build_DefinitionName": "{{env `Build_DefinitionName`}}",
     "Build_BuildNumber": "{{env `Build_BuildNumber`}}"
@@ -71,12 +71,12 @@
     {
       "type": "powershell",
       "inline": [
-          "$ErrorActionPreference='Stop'",
+        "$ErrorActionPreference='Stop'",
 
-          "Test-NetConnection -ComputerName {{user `StorageAccountInstallersName`}}.file.core.windows.net -Port 445",
-          "Import-Module -Name Smbshare -Force -Scope Local",
-          "New-SmbMapping -LocalPath Z: -RemotePath \"\\\\{{user `StorageAccountInstallersName`}}.file.core.windows.net\\installers\" -Username \"Azure\\{{user `StorageAccountInstallersName`}}\" -Password \"{{user `StorageAccountInstallersKey`}}\"",
-          "Write-Host \"'Z:' drive mapped\""
+        "Test-NetConnection -ComputerName {{user `StorageAccountInstallersName`}}.file.core.windows.net -Port 445",
+        "Import-Module -Name Smbshare -Force -Scope Local",
+        "New-SmbMapping -LocalPath Z: -RemotePath \"\\\\{{user `StorageAccountInstallersName`}}.file.core.windows.net\\installers\" -Username \"Azure\\{{user `StorageAccountInstallersName`}}\" -Password \"{{user `StorageAccountInstallersKey`}}\"",
+        "Write-Host \"'Z:' drive mapped\""
       ]
     },
     {
@@ -87,49 +87,9 @@
       ]
     },
     {
-      "type":"powershell",
-      "inline": [
-        "echo \"Creando carpeta temp_deploys en C:\"",
-        "New-Item -Path \"c:\\\" -Name \"temp_deploys\" -ItemType \"directory\""
-        ]
-    },
-    {
       "type": "powershell",
       "inline": [
-        "echo \"Descomprimiendo Z:\\scripts\\language.zip en --> c:\\temp_deploys\"",
-        "Expand-Archive -LiteralPath Z:\\scripts\\language.zip -DestinationPath c:\\temp_deploys\\ -Force"
-      ]
-    },
-    {
-      "type": "powershell",
-      "inline": [
-        "lpksetup /i es-es /p c:\\temp_deploys\\langpacks\\es-es\\"
-      ]
-    }, 
-    {
-      "type": "powershell",
-      "inline": [  
-        "$ErrorActionPreference = 'continue'",
-        "powershell.exe c:\\temp_deploys\\language.ps1"
-      ]
-    },
-    {
-      "type": "windows-shell",
-      "inline": [
-        "dism /online /Add-Package /PackagePath=\"c:\\temp_deploys\\langpacks\\es-es\\Microsoft-Windows-Client-Language-Pack_x64_es-es.cab\""
-      ]
-    },
-    {
-      "type": "windows-restart",
-      "restart_timeout": "10m",
-      "restart_check_command": "powershell -command \"& {Write-Output 'restarted.'}\""
-    },
-    
-    {
-      "type": "powershell",
-      "inline": [
-        "Get-ChildItem -Path c:\\temp_deploys -Recurse | Remove-Item -force -recurse -ErrorAction SilentlyContinue",
-        "Remove-Item –Path c:\\temp_deploys –Force -ErrorAction SilentlyContinue"
+        "powershell.exe Z:\\\\scripts\\install_iis.ps1"
       ]
     },
     {
