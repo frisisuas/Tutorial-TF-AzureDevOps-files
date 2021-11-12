@@ -8,8 +8,8 @@ variables:
   - group: packer-image-build-variables
   
 stages:
-- stage: win10_21h1_evd_o365pp
-  displayName: Windows 10 O365 Pro Plus
+- stage: WS_2022_datacenter
+  displayName: Windows Server 2022 Azure Edition
   jobs:
   - job: build
     displayName: Build Image
@@ -19,9 +19,9 @@ stages:
         - agent.name -equals agent 
     steps:
     - task: riezebosch.Packer.PackerTool.PackerTool@0
-      displayName: 'Use Packer 1.7.2'
+      displayName: 'Use Packer 1.7.8'
       inputs: 
-        version: 1.7.2
+        version: 1.7.8
     - task: PackerBuild@1
       displayName: 'Build Image'
       inputs:
