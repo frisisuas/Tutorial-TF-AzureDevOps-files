@@ -8,8 +8,8 @@ variables:
   - group: packer-image-build-variables
   
 stages:
-- stage: WS_2022_datacenter
-  displayName: Windows Server 2022 Azure Edition
+- stage: WS_2019_datacenter
+  displayName: Windows Server 2019 Azure Edition
   jobs:
   - job: build
     displayName: Build Image

@@ -21,7 +21,7 @@
 
     "ImagePublisher":"MicrosoftWindowsServer",
     "ImageOffer":"WindowsServer",
-    "ImageSku":"2022-Datacenter",
+    "ImageSku":"2019-Datacenter",
 
     "Build_DefinitionName": "{{env `Build_DefinitionName`}}",
     "Build_BuildNumber": "{{env `Build_BuildNumber`}}"
