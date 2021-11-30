@@ -33,9 +33,31 @@ stages:
       displayName: 'Save Build Variables: BuildImage'
       inputs:
         prefixes: BuildImage
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: Build Image and associated Template'
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
-        ArtifactName: 'Build Image'
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        publishLocation: 'Container'
+        SourceFolder: '$(Build.SourcesDirectory)'
+        Contents: |
+          packer.json
+          azure-pipelines.yml
+          !.git/**/*
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: yml & json'
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: MyBuildOutputs
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)' 
+        #includeRootFolder: true 
+        archiveType: 'zip' # Options: zip, 7z, tar, wim
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
+        replaceExistingArchive: true 
+        verbose: true
+    #- task: PublishBuildArtifacts@1
+    #  displayName: 'Publish Artifact: Build Image and associated Template'
+    #  inputs:
+    #    ArtifactName: 'Build Image'
+    #    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    #    publishLocation: 'Container'
