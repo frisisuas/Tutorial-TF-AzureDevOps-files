@@ -94,6 +94,12 @@
     {
       "type": "powershell",
       "inline": [
+        "powershell.exe Z:\\\\scripts\\replace-wallpaper-sysprep.ps1"
+      ]
+    },
+    {
+      "type": "powershell",
+      "inline": [
         " # NOTE: the following *2* lines are only needed if the you have installed the Guest Agent.",
         "  while ((Get-Service RdAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
         "  while ((Get-Service WindowsAzureGuestAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
