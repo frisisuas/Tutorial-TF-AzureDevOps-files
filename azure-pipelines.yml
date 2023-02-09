@@ -8,20 +8,18 @@ variables:
   - group: packer-image-build-variables
   
 stages:
-- stage: WS_2019_datacenter
-  displayName: Windows Server 2019 Azure Edition
+- stage: win10_21h1_evd_o365pp
+  displayName: Windows 10 O365 Pro Plus
   jobs:
   - job: build
     displayName: Build Image
     pool:
-      name: frsteam_agent
-      demands:
-        - agent.name -equals agent 
+      vmImage: 'windows-latest'
     steps:
     - task: riezebosch.Packer.PackerTool.PackerTool@0
-      displayName: 'Use Packer 1.7.8'
+      displayName: 'Use latest Packer'
       inputs: 
-        version: 1.7.8
+        version: 
     - task: PackerBuild@1
       displayName: 'Build Image'
       inputs:
@@ -33,31 +31,9 @@ stages:
       displayName: 'Save Build Variables: BuildImage'
       inputs:
         prefixes: BuildImage
-    - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-      inputs:
-        SourceFolder: '$(Build.SourcesDirectory)'
-        Contents: |
-          packer.json
-          azure-pipelines.yml
-          !.git/**/*
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: yml & json'
+      displayName: 'Publish Artifact: Build Image and associated Template'
       inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)
-        artifactName: MyBuildOutputs
-    - task: ArchiveFiles@2
-      inputs:
-        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)' 
-        #includeRootFolder: true 
-        archiveType: 'zip' # Options: zip, 7z, tar, wim
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
-        replaceExistingArchive: true 
-        verbose: true
-    #- task: PublishBuildArtifacts@1
-    #  displayName: 'Publish Artifact: Build Image and associated Template'
-    #  inputs:
-    #    ArtifactName: 'Build Image'
-    #    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    #    publishLocation: 'Container'
+        ArtifactName: 'Build Image'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        publishLocation: 'Container'
